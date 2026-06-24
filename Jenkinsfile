@@ -18,7 +18,8 @@ pipeline {
         stage('Static Code Analysis (SonarQube)') {
             steps {
                 echo 'Ejecutando análisis estático con SonarQube...'
-                // En la guía se conecta con el servidor del puerto 9000
+
+                sh "docker run --rm --network jenkins -v \$(pwd):/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=squ_6dbc85338aac39492b4429c4dcd98ab431a003f2"
             }
         }
 

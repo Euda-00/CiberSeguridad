@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Ejecutando análisis estático con SonarQube...'
 
-                sh "npx sonarqube-scanner -Dsonar.projectKey=mi-app-flask-v2 -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=sqp_ded9226530f94196f42e1041aeec5b9d648ddb4b"
+                sh "docker run --rm --network jenkins -v \$(pwd):/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectKey=mi-app-flask-v2 -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=sqp_cd849f8a2c644a52d2e357759a18d84b89183bd0
             }
         }
 

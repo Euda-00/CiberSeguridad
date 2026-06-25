@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Ejecutando análisis estático con SonarQube...'
 
-                sh "npx sonarqube-scanner -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=squ_6dbc85338aac39492b4429c4dcd98ab431a003f2"
+                sh "npx sonarqube-scanner -Dsonar.projectKey=mi-app-flask-v2 -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=sqp_ded9226530f94196f42e1041aeec5b9d648ddb4b"
             }
         }
 

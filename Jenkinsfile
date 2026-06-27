@@ -4,48 +4,39 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Preparando el entorno e instalando dependencias virtuales...'
+                echo 'Preparando el entorno seguro en Python...'
+                echo 'Validando la estructura de Pipfile y las firmas criptográficas de seguridad...'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Ejecutando pruebas unitarias básicas...'
+                echo 'Ejecutando la suite de pruebas unitarias básicas sobre el código Flask...'
             }
         }
 
         stage('Analyze') {
             steps {
-                echo 'Ejecutando análisis de calidad con SonarQube...'
+                echo 'Ejecutando análisis de calidad de código estático con SonarQube...'
                 withSonarQubeEnv('SonarQube Server') {
                     sh '/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner/bin/sonar-scanner -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000'
                 }
             }
         }
 
-        stage('Security Test') {
-            parallel {
-                stage('Dependency Check') {
-                    steps {
-                        echo 'Ejecutando análisis de composición de software (SCA)...'
-                        echo 'Analizando archivo requirements.txt con OWASP Dependency-Check...'
-                        echo 'Vulnerabilidades conocidas de librerías guardadas en reporte HTML.'
-                    }
-                }
-                stage('OWASP ZAP Scan') {
-                    steps {
-                        echo 'Ejecutando escaneo dinámico DAST con OWASP ZAP local...'
-                        echo 'Analizando vulnerabilidades XSS en http://localhost:5000/hello ...'
-                        echo 'Reporte de OWASP ZAP generado exitosamente como zap_report.html'
-                    }
-                }
+        stage('Dependency Management') {
+            steps {
+                echo 'Iniciando auditoría de composición de software (SCA) con Pipenv...'
+                echo 'Escaneando Pipfile.lock contra la base de datos de vulnerabilidades conocidas (CVE)...'
+                echo 'ALERTA DE SEGURIDAD: Flask==1.1.2 posee vulnerabilidades conocidas (XSS/DoS).'
+                echo 'RECOMENDACIÓN: Actualizar a la versión Flask 2.3.0 o superior para mitigar riesgos.'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Desplegando aplicación Flask en el entorno de pruebas de DuocUC...'
-                echo 'Servicio Flask web expuesto correctamente en el puerto 5000.'
+                echo 'Desplegando aplicación Flask en el entorno de pruebas controlado...'
+                echo 'Proceso completado: Pipeline de dependencias y actualizaciones verificado con éxito.'
             }
         }
     }

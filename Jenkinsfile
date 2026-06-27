@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // Corregidos los tipos para que coincidan con el diccionario de Jenkins
-        Sonar 'SonarQube Scanner'
+        sonar 'SonarQube Scanner'
         'dependency-check' 'Dependency-Check'
     }
 

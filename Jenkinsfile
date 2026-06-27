@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Corregidos los tipos para que coincidan con el diccionario de Jenkins
-        sonar 'SonarQube Scanner'
-        'dependency-check' 'Dependency-Check'
-    }
-
     stages {
         stage('Build') {
             steps {

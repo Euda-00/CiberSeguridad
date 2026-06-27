@@ -2,33 +2,30 @@ pipeline {
     agent any
 
     tools {
-        // Estos nombres deben coincidir con lo que configures en Jenkins
-        sonarRunner 'SonarQube Scanner'
-        dependencycheck 'Dependency-Check'
+        // Corregidos los tipos para que coincidan con el diccionario de Jenkins
+        sonarRunnerInstallation 'SonarQube Scanner'
+        'dependency-check' 'Dependency-Check'
     }
 
     stages {
         stage('Build') {
             steps {
                 echo 'Preparando el entorno e instalando dependencias virtuales...'
-                // Aquí simulas o instalas los requerimientos
-                // sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias básicas...'
-                // Espacio para tests automáticos si tuvieses
             }
         }
 
         stage('Analyze') {
             steps {
                 echo 'Ejecutando análisis de calidad con SonarQube...'
-                // Envía el código a SonarQube
                 withSonarQubeEnv('SonarQube Server') {
-                    sh 'sonar-scanner'
+                    // Usamos la variable global para invocar el binario correcto en Linux
+                    sh "${tool 'SonarQube Scanner'}/bin/sonar-scanner -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000"
                 }
             }
         }
@@ -45,8 +42,8 @@ pipeline {
                 stage('OWASP ZAP Scan') {
                     steps {
                         echo 'Invocando OWASP ZAP para Análisis Dinámico (DAST)...'
-                        // Ejecuta el contenedor de ZAP contra la URL donde corre tu app Flask
-                        sh 'docker run --rm -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000/hello -r zap_report.html || true'
+                        // Ejecuta el contenedor de ZAP en la misma red interna apuntando al puerto 5000 de tu app
+                        sh 'docker run --rm --network devsecops-net -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable zap-baseline.py -t http://host.docker.internal:5000/hello -r zap_report.html || true'
                     }
                 }
             }
@@ -55,8 +52,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Desplegando aplicación en el entorno de pruebas...'
-                // Comando para dejar corriendo la app Flask en background o en un contenedor
-                // sh 'python app.py &'
             }
         }
     }

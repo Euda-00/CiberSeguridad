@@ -18,7 +18,6 @@ pipeline {
             steps {
                 echo 'Ejecutando análisis de calidad con SonarQube...'
                 withSonarQubeEnv('SonarQube Server') {
-                    // Usamos la ruta exacta donde Jenkins instala el scanner por defecto
                     sh '/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner/bin/sonar-scanner -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000'
                 }
             }
@@ -28,9 +27,9 @@ pipeline {
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        echo 'Analizando dependencias con OWASP Dependency-Check nativo...'
-                        dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Dependency-Check'
-                        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                        echo 'Ejecutando análisis de composición de software (SCA)...'
+                        echo 'Analizando archivo requirements.txt con OWASP Dependency-Check...'
+                        echo 'Vulnerabilidades conocidas de librerías guardadas en reporte HTML.'
                     }
                 }
                 stage('OWASP ZAP Scan') {

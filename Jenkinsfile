@@ -1,43 +1,62 @@
 pipeline {
     agent any
 
+    tools {
+        // Estos nombres deben coincidir con lo que configures en Jenkins
+        sonarRunner 'SonarQube Scanner'
+        dependencycheck 'Dependency-Check'
+    }
+
     stages {
         stage('Build') {
             steps {
-                echo 'Instalando dependencias de la aplicación...'
-                // Aquí simula la preparación
+                echo 'Preparando el entorno e instalando dependencias virtuales...'
+                // Aquí simulas o instalas los requerimientos
+                // sh 'pip install -r requirements.txt'
             }
         }
-        
+
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias básicas...'
+                // Espacio para tests automáticos si tuvieses
             }
         }
 
-        stage('Static Code Analysis (SonarQube)') {
+        stage('Analyze') {
             steps {
-                echo 'Ejecutando análisis estático con SonarQube...'
-
-                sh "docker run --rm --network jenkins -v \$(pwd):/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectKey=mi-app-flask-v2 -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=sqp_cd849f8a2c644a52d2e357759a18d84b89183bd0
+                echo 'Ejecutando análisis de calidad con SonarQube...'
+                // Envía el código a SonarQube
+                withSonarQubeEnv('SonarQube Server') {
+                    sh 'sonar-scanner'
+                }
             }
         }
 
-        stage('Security Test (Dependency Check)') {
-            steps {
-                echo 'Escaneando vulnerabilidades en dependencias (requirements.txt)...'
-            }
-        }
-
-        stage('Vulnerability Scan (OWASP ZAP)') {
-            steps {
-                echo 'Ejecutando escaneo dinámico contra la app Flask...'
+        stage('Security Test') {
+            parallel {
+                stage('Dependency Check') {
+                    steps {
+                        echo 'Analizando dependencias con OWASP Dependency-Check...'
+                        dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Dependency-Check'
+                        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                    }
+                }
+                stage('OWASP ZAP Scan') {
+                    steps {
+                        echo 'Invocando OWASP ZAP para Análisis Dinámico (DAST)...'
+                        // Ejecuta el contenedor de ZAP contra la URL donde corre tu app Flask
+                        sh 'docker run --rm -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000/hello -r zap_report.html || true'
+                    }
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Desplegando la aplicación de manera segura en producción...'
+                echo 'Desplegando aplicación en el entorno de pruebas...'
+                // Comando para dejar corriendo la app Flask en background o en un contenedor
+                // sh 'python app.py &'
             }
         }
     }

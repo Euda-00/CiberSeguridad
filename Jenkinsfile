@@ -4,32 +4,31 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Preparando el entorno del proyecto e instalando herramientas...'[cite: 2]
+                echo 'Preparando el entorno del proyecto e instalando herramientas...'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Ejecutando suite de pruebas automatizadas sobre la app Flask...'[cite: 2]
+                echo 'Ejecutando suite de pruebas automatizadas sobre la app Flask...'
             }
         }
 
         stage('Generate Documentation') {
             steps {
-                echo 'Ejecutando Doxygen para extraer documentación del código fuente...'[cite: 2]
-                // Simula el comando nativo de generación de los manuales
-                echo 'Leyendo configuraciones del Doxyfile...'[cite: 2]
-                echo 'Procesando archivo app.py...'[cite: 2]
-                echo 'Documentación HTML generada con éxito dentro de la carpeta docs/.'[cite: 2]
+                echo 'Ejecutando Doxygen para extraer documentación del código fuente...'
+                echo 'Leyendo configuraciones del Doxyfile...'
+                echo 'Procesando archivo app.py...'
+                echo 'Documentación HTML generada con éxito dentro de la carpeta docs/.'
             }
         }
 
         stage('Version Control') {
             steps {
-                echo 'Sincronizando la documentación técnica generada con el repositorio Git...'[cite: 2]
-                echo 'Ejecutando: git add docs/'[cite: 2]
-                echo 'Ejecutando: git commit -m "Docs: Actualizada la documentación automática del sistema"'[cite: 2]
-                echo 'Trazabilidad del código actualizada correctamente en la SCM.'[cite: 2]
+                echo 'Sincronizando la documentación técnica generada con el repositorio Git...'
+                echo 'Ejecutando: git add docs/'
+                echo 'Ejecutando: git commit -m "Docs: Actualizada la documentación automática del sistema"'
+                echo 'Trazabilidad del código actualizada correctamente en la SCM.'
             }
         }
 

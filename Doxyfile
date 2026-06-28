@@ -1,0 +1,5 @@
+# Doxyfile configuration for Doxygen
+PROJECT_NAME         ="Ejemplo python Flask"
+OUTPUT_DIRECTORY     ="docs"
+RECURSIVE            = YES
+GENERATE_LATEX       = NO

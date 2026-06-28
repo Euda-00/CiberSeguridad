@@ -4,6 +4,15 @@ app = Flask(__name__)
 
 @app.route('/hello')
 def hello():
+    """
+    Endpoint para saludar al usuario.
+
+    Parámetros:
+    name (str): nombre del usurio pasado como parámetro en la URL.
+
+    Retorna:
+    str: mensaje de saludo personalizado.
+    """
     name = request.args.get('name')
     return f"Hello, {name}!"
 

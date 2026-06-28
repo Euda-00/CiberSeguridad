@@ -16,26 +16,32 @@ pipeline {
 
         stage('Generate Documentation') {
             steps {
-                echo 'Ejecutando Doxygen para extraer documentación del código fuente...'
-                echo 'Leyendo configuraciones del Doxyfile...'
-                echo 'Procesando archivo app.py...'
-                echo 'Documentación HTML generada con éxito dentro de la carpeta docs/.'
+                echo 'Invocando Doxygen real a través de Docker...'
+                // Este comando corre Doxygen de verdad, lee tu Doxyfile y genera la carpeta 'docs'
+                sh 'docker run --rm -v \$(pwd):/data miatlabs/doxygen doxygen Doxyfile'
             }
         }
 
         stage('Version Control') {
             steps {
-                echo 'Sincronizando la documentación técnica generada con el repositorio Git...'
-                echo 'Ejecutando: git add docs/'
-                echo 'Ejecutando: git commit -m "Docs: Actualizada la documentación automática del sistema"'
-                echo 'Trazabilidad del código actualizada correctamente en la SCM.'
+                echo 'Actualizando la trazabilidad en Git...'
+                // Mostramos en consola que los archivos reales ya existen en el espacio de trabajo
+                sh 'ls -la docs/html/'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Desplegando servicio Flask y publicando portal de documentación...'
-                echo 'Pipeline finalizado con éxito: Código documentado y trazable.'
+                echo 'Publicando el portal de documentación web real en el servidor de Jenkins...'
+                // Ahora que la carpeta SÍ existe físicamente gracias al paso de Doxygen, este plugin no fallará
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'docs/html',
+                    reportFiles: 'index.html',
+                    reportName: 'Documentación Técnica Doxygen'
+                ])
             }
         }
     }

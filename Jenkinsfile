@@ -4,36 +4,33 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Preparando el entorno del proyecto e instalando herramientas...'
+                echo 'Preparando el entorno del proyecto...'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Ejecutando suite de pruebas automatizadas sobre la app Flask...'
+                echo 'Ejecutando pruebas sobre la app Flask...'
             }
         }
 
         stage('Generate Documentation') {
             steps {
-                echo 'Invocando Doxygen real a través de Docker...'
-                // Este comando corre Doxygen de verdad, lee tu Doxyfile y genera la carpeta 'docs'
+                echo 'Invocando Doxygen real a través del socket de Docker...'
                 sh 'docker run --rm -v \$(pwd):/data miatlabs/doxygen doxygen Doxyfile'
             }
         }
 
         stage('Version Control') {
             steps {
-                echo 'Actualizando la trazabilidad en Git...'
-                // Mostramos en consola que los archivos reales ya existen en el espacio de trabajo
+                echo 'Verificando la existencia de los archivos generados...'
                 sh 'ls -la docs/html/'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Publicando el portal de documentación web real en el servidor de Jenkins...'
-                // Ahora que la carpeta SÍ existe físicamente gracias al paso de Doxygen, este plugin no fallará
+                echo 'Publicando el portal de documentación web real en Jenkins...'
                 publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,

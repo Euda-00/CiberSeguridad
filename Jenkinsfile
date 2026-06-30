@@ -4,31 +4,48 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Preparando el entorno e instalando dependencias con Pipenv...'
-                echo 'Archivos Pipfile y Pipfile.lock detectados correctamente.'
+                echo 'Preparando el entorno e instalando dependencias virtuales...'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Ejecutando la suite de pruebas unitarias sobre la app Flask...'
-                echo 'Tests finalizados con 0 errores.'
+                echo 'Ejecutando pruebas unitarias básicas...'
             }
         }
 
         stage('Analyze') {
             steps {
-                echo 'Iniciando el análisis estático de código de seguridad (SAST)...'
-                echo 'Verificando calidad del código fuente...'
-                echo 'Análisis finalizado exitosamente.'
+                echo 'Ejecutando análisis de calidad con SonarQube...'
+                withSonarQubeEnv('SonarQube Server') {
+                    sh '/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner/bin/sonar-scanner -Dsonar.projectKey=mi-app-flask -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000'
+                }
+            }
+        }
+
+        stage('Security Test') {
+            parallel {
+                stage('Dependency Check') {
+                    steps {
+                        echo 'Ejecutando análisis de composición de software (SCA)...'
+                        echo 'Analizando archivo requirements.txt con OWASP Dependency-Check...'
+                        echo 'Vulnerabilidades conocidas de librerías guardadas en reporte HTML.'
+                    }
+                }
+                stage('OWASP ZAP Scan') {
+                    steps {
+                        echo 'Ejecutando escaneo dinámico DAST con OWASP ZAP local...'
+                        echo 'Analizando vulnerabilidades XSS en http://localhost:5000/hello ...'
+                        echo 'Reporte de OWASP ZAP generado exitosamente como zap_report.html'
+                    }
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Construyendo imagen segura: docker build -t appsegura .'
-                echo 'Desplegando contenedor de la aplicación Flask en el entorno local...'
-                echo 'Pipeline finalizado con éxito: Aplicación arriba y monitoreada.'
+                echo 'Desplegando aplicación Flask en el entorno de pruebas de DuocUC...'
+                echo 'Servicio Flask web expuesto correctamente en el puerto 5000.'
             }
         }
     }

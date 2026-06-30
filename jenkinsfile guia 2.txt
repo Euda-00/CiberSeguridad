@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    stages {
         stage('Build') {
             steps {
-                echo 'Preparando el entorno e instalando dependencias virtuales...'
+                sh 'pipenv --version'
+                sh 'pipenv graph'
             }
         }
 

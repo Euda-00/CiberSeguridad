@@ -1,10 +1,12 @@
+## @file app.py
+#  @brief Componente principal de la aplicación Flask.
 from flask import Flask, request
 
 app = Flask(__name__)
 
 @app.route('/hello')
 def hello():
-    """
+    """!
     Endpoint para saludar al usuario.
 
     Parámetros:
